@@ -1,17 +1,21 @@
 {
-  "name": "ember-form-for",
-  "version": "2.0.0-alpha.17",
+  "name": "@ecraft/ember-form-for",
+  "version": "3.0.0-beta.1",
   "description": "Build \"Data Down Actions Up\" forms, with good default markup and built-in accessibility support",
   "keywords": [
     "ember-addon"
   ],
   "license": "MIT",
-  "author": "Marten Schilstra <mail@martenschilstra.nl>",
+  "author": [
+    "Marten Schilstra <mail@martenschilstra.nl>",
+    "Nicklas Andersson <nicklas.andersson@gmail.com>",
+    "Mikael Riska <mikael.riska@iki.fi>"
+  ],
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "https://github.com/martndemus/ember-form-for",
+  "repository": "https://github.com/ecraft/ember-form-for",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
@@ -50,10 +54,9 @@
     "loader.js": "^4.0.10"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">= 8.*"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config",
-    "demoURL": "http://martndemus.github.io/ember-form-for"
+    "configPath": "tests/dummy/config"
   }
 }
