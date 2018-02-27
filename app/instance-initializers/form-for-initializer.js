@@ -5,12 +5,12 @@ const { merge, set } = Ember;
 
 const DEFAULT_CONFIG = {
   buttonClasses: ['form-button'],
-  fieldClasses: ['form-field'],
+  fieldClasses: ['form-field', 'form-group'],
   fieldHasErrorClasses: ['form-field--has-errors'],
   errorClasses: ['form-field--errors', 'invalid-feedback'],
-  hintClasses: ['form-field--hint'],
-  inputClasses: ['form-field--control'],
-  labelClasses: ['form-field--label'],
+  hintClasses: ['form-field--hint', 'form-text', 'text-muted'],
+  inputClasses: ['form-field--control', 'form-control'],
+  labelClasses: ['form-field--label', 'form-control-label'],
   resetClasses: ['form-button--reset'],
   submitClasses: ['form-button--submit']
 };
