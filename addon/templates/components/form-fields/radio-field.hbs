@@ -11,7 +11,7 @@
     label=labelText
     control=control
     update=(action update) as |f|}}
-  {{#f.label required=required}}
+  <div class="custom-control custom-radio">
     {{f.control
         option=value
         accesskey=accesskey
@@ -21,14 +21,15 @@
         dir=dir
         disabled=disabled
         hidden=hidden
+        id=radioButtonId
         lang=lang
         list=list
         required=required
         tabindex=tabindex
         title=title
-    }}
-    {{f.labelText}}
-  {{/f.label}}
+        class="custom-control-input"}}
+    <label class="custom-control-label" for={{radioButtonId}}>{{f.labelText}}</label>
+  </div>
   {{f.errors}}
   {{f.hint}}
 {{/form-field}}

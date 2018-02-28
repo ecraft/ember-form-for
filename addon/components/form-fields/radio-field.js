@@ -20,6 +20,10 @@ const RadioFieldComponent = Component.extend({
 
   control: 'one-way-radio',
 
+  radioButtonId: Ember.computed(function() {
+    return `radiobutton-${Ember.guidFor(this)}`;
+  }),
+
   config: service('ember-form-for/config'),
 
   modelName: or('object.modelName', 'object.constructor.modelName'),
@@ -54,7 +58,7 @@ const RadioFieldComponent = Component.extend({
       dasherize(get(this, 'propertyName') || ''),
       value
     ].filter((x) => !!x)
-     .join('.');
+      .join('.');
   })
 });
 
