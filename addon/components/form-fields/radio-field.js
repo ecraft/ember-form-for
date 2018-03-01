@@ -11,7 +11,8 @@ const {
   get,
   inject: { service },
   isPresent,
-  set
+  set,
+  guidFor
 } = Ember;
 
 const RadioFieldComponent = Component.extend({
@@ -20,8 +21,8 @@ const RadioFieldComponent = Component.extend({
 
   control: 'one-way-radio',
 
-  radioButtonId: Ember.computed(function() {
-    return `radiobutton-${Ember.guidFor(this)}`;
+  radioButtonId: computed(function() {
+    return `radiobutton-${guidFor(this)}`;
   }),
 
   config: service('ember-form-for/config'),
