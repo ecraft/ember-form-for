@@ -22,7 +22,15 @@ test('It adds a legend with the label text', function(assert) {
 
 test('It renders a list of radios with label for each option', function(assert) {
   this.render(hbs`{{form-fields/radio-group "gender" object=object options=options}}`);
-  assert.equal(this.$('ul li label input[type="radio"]').length, 3);
+  let radioIds = this.$('ul li input[type="radio"]').map((function() {
+    return this.getAttribute('id');
+  })).toArray();
+
+  let labelForAttrs = this.$('ul li label').map(function() {
+    return this.getAttribute('for');
+  }).toArray();
+
+  assert.deepEqual(radioIds, labelForAttrs, "The lists of IDs for radio buttons and their labels' 'for' attributes should match.");
 });
 
 test('Disabled true disables all radios', function(assert) {
