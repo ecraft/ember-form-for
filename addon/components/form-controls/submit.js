@@ -1,14 +1,20 @@
 import Ember from 'ember';
-import AsyncButton from 'ember-async-button/components/async-button';
-import layout from 'ember-async-button/templates/components/async-button';
-import DynamicAttributeBindings from 'ember-one-way-controls/-private/dynamic-attribute-bindings';
+import EmberObject from '@ember/object';
+import Button from './button';
+import layout from 'ember-form-for/templates/components/form-controls/submit';
 
-const { get, set, inject: { service }, computed: { alias } } = Ember;
+const { computed: { alias }, PromiseProxyMixin, RSVP, computed, observer } = Ember;
 
-const SubmitButton = AsyncButton.extend(DynamicAttributeBindings, {
+const SubmitButton = Button.extend({
   layout,
+  tagName: 'button',
+  type: 'submit',
 
-  config: service('ember-form-for/config'),
+  activePromise: undefined,
+
+  classNames: ['async-button'],
+  attributeBindings: ['disabled', 'type'],
+
   submit: alias('action'),
   default: 'Submit',
   pending: 'Submitting...',
@@ -19,12 +25,33 @@ const SubmitButton = AsyncButton.extend(DynamicAttributeBindings, {
 
   init() {
     this._super(...arguments);
+  },
 
-    let type = get(this, 'type');
-    let buttonClasses = get(this, `config.${type}Classes`);
-    let classNames = get(this, 'classNames');
-    set(this, 'classNames', (classNames || []).concat(buttonClasses));
-  }
+  click() {
+    // PromiseProxyMixin allows us to use .isPending in the templates
+    // RSVP.Promise is required to handle situation when submit function
+    // returns non-promise.
+    this.set('activePromise', EmberObject.extend(PromiseProxyMixin).create({
+      promise: new RSVP.Promise((resolve) => {
+        resolve(this.get('submit')());
+      })
+    }));
+    return false;
+  },
+
+  disabled: computed('activePromise.isPending', function() {
+    if (this.get('activePromise.isPending') === true) {
+      return true;
+    } else {
+      return false;
+    }
+  }),
+
+  resetAction: observer('reset', 'activePromise.isFulfilled', 'activePromise.isRejected', function() {
+    if (this.get('reset') && (this.get('activePromise.isFulfilled') || this.get('activePromise.isRejected'))) {
+      this.set('activePromise', undefined);
+    }
+  })
 });
 
 SubmitButton.reopenClass({
