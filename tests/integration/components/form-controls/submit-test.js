@@ -14,6 +14,16 @@ test('It renders a submit button', function(assert) {
   assert.equal(this.$('button').attr('type'), 'submit', 'Submit button is rendered');
 });
 
+test('It renders a user-defined submit button', function(assert) {
+  this.render(hbs`
+    {{#form-controls/submit}}
+      foo
+    {{/form-controls/submit}}
+  `);
+
+  assert.equal(this.$('button').text().trim(), 'foo', 'Submit button shows user defined label');
+});
+
 test('Clicking the submit button triggers the "submit" action', function(assert) {
   assert.expect(1);
   this.on('submit', () => assert.ok(true));
@@ -29,7 +39,7 @@ test('Clicking the submit button triggers the "action" action', function(assert)
 });
 
 test('Clicking the submit button supports returning a promise', function(assert) {
-  assert.expect(3);
+  assert.expect(4);
   let promise = new RSVP.Promise((resolve) => {
     run.later(this, () => {
       resolve();
@@ -44,11 +54,93 @@ test('Clicking the submit button supports returning a promise', function(assert)
 
   $button.trigger('click');
   assert.equal($button.text().trim(), 'Submitting...', 'Button state changes on pending promise');
+  assert.equal(true, $button[0].disabled, 'Button should be disabled when promise is pending');
 
   return wait().then(() => {
     promise.then(() => {
       assert.ok(true);
       assert.equal($button.text().trim(), 'Submit', 'Button state returns on fulfilled promise');
+    });
+  });
+});
+
+test('Clicking the submit button supports returns to default state with reset=True', function(assert) {
+  assert.expect(4);
+  let promise = new RSVP.Promise((resolve) => {
+    run.later(this, () => {
+      resolve();
+    }, 500);
+  });
+
+  this.on('submit', () => {
+    return promise;
+  });
+  this.render(hbs`{{form-controls/submit action=(action 'submit') reset=true fulfilled='Succeed'}}`);
+  let $button = this.$('button');
+
+  $button.trigger('click');
+  assert.equal($button.text().trim(), 'Submitting...', 'Button state changes on pending promise');
+  assert.equal(true, $button[0].disabled, 'Button should be disabled when promise is pending');
+
+  return wait().then(() => {
+    promise.then(() => {
+      assert.ok(true);
+      assert.equal($button.text().trim(), 'Submit', 'Button state returns on fulfilled promise');
+    });
+  });
+});
+
+test('Clicking the submit button supports user defined text for fulfilled action', function(assert) {
+  assert.expect(4);
+  let promise = new RSVP.Promise((resolve) => {
+    run.later(this, () => {
+      resolve();
+    }, 500);
+  });
+
+  this.on('submit', () => {
+    return promise;
+  });
+  this.render(hbs`{{form-controls/submit action=(action 'submit') fulfilled='foo'}}`);
+  let $button = this.$('button');
+
+  $button.trigger('click');
+  assert.equal($button.text().trim(), 'Submitting...', 'Button state changes on pending promise');
+  assert.equal(true, $button[0].disabled, 'Button should be disabled when promise is pending');
+
+  return wait().then(() => {
+    promise.then(() => {
+      assert.ok(true);
+      assert.equal($button.text().trim(), 'foo', 'Button state returns on fulfilled promise');
+    });
+  });
+});
+
+test('Clicking the submit button supports returning a promise and changes user-defined content', function(assert) {
+  assert.expect(3);
+  let promise = new RSVP.Promise((resolve) => {
+    run.later(this, () => {
+      resolve();
+    }, 500);
+  });
+
+  this.on('submit', () => {
+    return promise;
+  });
+  this.render(hbs`
+    {{#form-controls/submit action=(action 'submit') as |t promise|}}
+      {{promise.isPending}}--{{promise.isFulfilled}}--{{promise.isSettled}}--{{promise.isRejected}}
+    {{/form-controls/submit}}
+  `);
+  let $button = this.$('button');
+
+  $button.trigger('click');
+  assert.equal($button.text().trim(), 'true--false--false--false', 'Button state changes on pending promise');
+
+  return wait().then(() => {
+    promise.then(() => {
+      assert.ok(true);
+      assert.equal($button.text().trim(), 'false--true--true--false', 'Button state returns on fulfilled promise');
     });
   });
 });
