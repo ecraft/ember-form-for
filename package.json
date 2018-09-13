@@ -1,6 +1,6 @@
 {
   "name": "@ecraft/ember-form-for",
-  "version": "3.0.0-beta.6",
+  "version": "3.0.0-beta.7",
   "description": "Build \"Data Down Actions Up\" forms, with good default markup and built-in accessibility support",
   "keywords": [
     "ember-addon"
