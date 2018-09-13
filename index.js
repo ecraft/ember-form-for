@@ -7,6 +7,6 @@ module.exports = {
     this._super.included(app);
   },
   isDevelopingAddon: function() {
-    return true;
+    return false;
   }
 };
